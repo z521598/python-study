@@ -7,3 +7,4 @@ from classtest.ThreadObj2 import printStr
 to = ThreadObj2("god");
 print to.getCount();
 printStr("ll")
+
