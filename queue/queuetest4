@@ -1,0 +1,55 @@
+# !/usr/bin/env python
+# *_*coding:UTF-8 *_*
+import time;
+import Queue;
+import threading;
+
+'''
+queue with thread TODO FIX
+'''
+
+exitFlag = 0;
+queueLock = threading.Lock();
+
+
+class Mythread(threading.Thread):
+    def __init__(self, q):
+        self.q = q;
+
+    def run(self):
+        print "Start:", self.name;
+        self.process_date(self.q);
+        print "End:", self.name;
+
+    def process_date(q):
+        while not exitFlag:
+            queueLock.acquire();
+            print q.get();
+            queueLock.release();
+        else:
+            queueLock.release();
+        time.sleep(1);
+
+
+workQueue = Queue.Queue();
+qs = ["d1", "d2", "d3"];
+threads = [];
+
+for w in qs:
+    t = Mythread(w);
+    t.start();
+    threads.append(t);
+
+for data in qs:
+    workQueue.put(data);
+
+# 等待队列清空
+while not workQueue.empty():
+    pass
+
+# 通知线程是时候退出
+exitFlag = 1
+
+for t in threads:
+    t.join()
+print "Exiting Main Thread"
